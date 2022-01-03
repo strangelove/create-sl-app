@@ -1,5 +1,7 @@
 # Introduction:
-    Node.js CLI app that is responsible for scaffolding React/Next.js project with headless CMS, data fetching, styling, reusable components, and pre-commit hooks.
+    Node.js CLI app that is responsible for scaffolding React/Next.js 
+    project with headless CMS, data fetching, styling, reusable
+    components, and pre-commit hooks.
   
 # Project structure:
     main.js
