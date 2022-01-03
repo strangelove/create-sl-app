@@ -1,0 +1,30 @@
+{
+  "name": "@sobhi_alkhuder/create-sl-app",
+  "version": "1.0.0",
+  "description": "A CLI tool to scaffold a new Next.js app powered by headless CMS",
+  "main": "src/index.js",
+  "bin": {
+    "@sobhi_alkhuder/create-sl-app": "bin/create-sl-app",
+    "create-sl-app": "/bin/create-sl-app.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "arg": "^5.0.1",
+    "chalk": "^5.0.0",
+    "esm": "^3.2.25",
+    "inquirer": "^8.2.0",
+    "ncp": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "create-sl-app"
+  ],
+  "author": "Sobhi Al Khuder",
+  "license": "ISC"
+}
