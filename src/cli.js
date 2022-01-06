@@ -1,6 +1,15 @@
 import arg from "arg";
 import inquirer from "inquirer";
 
+import createApp from './main.js'
+
+/*
+  1- Recive the command line arguments
+  2- Parse the arguments into an options object
+  3- Prompt the user for any missing options
+  4- Create the app
+*/
+
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -26,16 +35,15 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
-  const questions = [];
-  const answers = await inquirer.prompt(questions);
-
+  
   if (options.skipPrompts) {
     return {
       ...options,
       template: options.template || defaultTemplate,
     };
   }
-
+  
+  const questions = [];
   if (!options.template) {
     questions.push({
       type: "list",
@@ -45,7 +53,7 @@ async function promptForMissingOptions(options) {
       default: defaultTemplate,
     });
   }
-
+  
   if (!options.git) {
     questions.push({
       type: "confirm",
@@ -54,7 +62,8 @@ async function promptForMissingOptions(options) {
       default: false,
     });
   }
-
+  
+  const answers = await inquirer.prompt(questions);
   return {
     ...options,
     template: options.template || answers.template,
@@ -65,5 +74,5 @@ async function promptForMissingOptions(options) {
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
-  console.log(options);
+  await createApp(options)
 }
