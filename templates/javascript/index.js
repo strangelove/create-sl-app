@@ -1,0 +1,1 @@
+// This is JS file is used to load the javascript files for the template
