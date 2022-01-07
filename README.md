@@ -41,4 +41,4 @@ MIT
 
 # Collaborators:
 
-[`Sobhi Al Khuder`](https://github.com/Sob7i)
+[Sobhi Al Khuder](https://github.com/Sob7i)
