@@ -16,9 +16,11 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--git": Boolean,
       "--yes": Boolean,
       "--install": Boolean,
+      "--typescript": Boolean,
       "-g": "--git",
       "-y": "--yes",
       "-i": "--install",
+      "-t": "--typescript",
     },
     {
       argv: rawArgs.slice(2),
@@ -28,7 +30,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   return {
     skipPrompts: args["--yes"] || false,
     git: args["--git"] || false,
-    template: args._[0],
+    name: args._[0],
+    template: args['--typescript'] ? 'Typescript' : undefined,
     runInstall: args["--install"] || false,
   };
 }
@@ -44,6 +47,15 @@ async function promptForMissingOptions(options) {
   }
   
   const questions = [];
+  if (!options.name) {
+    questions.push({
+      type: "input",
+      name: "name",
+      message: "What is your project named?",
+      default: 'my-app',
+    });
+  }
+
   if (!options.template) {
     questions.push({
       type: "list",

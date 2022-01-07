@@ -17,7 +17,7 @@ const access = promisify(fs.access);
 const copy = promisify(ncp);
 
 async function copyTemplateFiles(options) {
-  return copy(options.templateDirectory, options.targetDirectory, {
+  return await copy(options.templateDirectory, options.targetDirectory, {
     clobber: false,
   });
 }
@@ -37,21 +37,19 @@ async function initGit(options) {
 export default async function createApp(options) {
   options = {
     ...options,
-
     targetDirectory: options.targetDirectory || process.cwd(),
   };
 
   const currentFileUrl = import.meta.url;
   const templateDir = path.resolve(
     new URL(currentFileUrl).pathname,
-
     "../../templates",
-
     options.template.toLowerCase()
   );
 
   options.templateDirectory = templateDir;
 
+  console.log('currentFileUrl :>> ', currentFileUrl);
   console.log(`options`, options);
 
   try {

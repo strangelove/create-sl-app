@@ -1,1 +1,0 @@
-// This is a TS file that is used to generate the index.ts file
