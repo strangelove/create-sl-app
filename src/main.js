@@ -1,8 +1,6 @@
 import { projectInstall } from "pkg-install";
 import { promisify } from "util";
-// const execa = require("execa");
-// const execa = import("execa");
-// import execa from "execa";
+import execa from "execa";
 import Listr from "listr";
 import chalk from "chalk";
 import path from "path";
@@ -16,7 +14,6 @@ import fs from "fs";
 */
 
 const access = promisify(fs.access);
-
 const copy = promisify(ncp);
 
 async function copyTemplateFiles(options) {
@@ -45,7 +42,6 @@ export default async function createApp(options) {
   };
 
   const currentFileUrl = import.meta.url;
-
   const templateDir = path.resolve(
     new URL(currentFileUrl).pathname,
 
@@ -56,9 +52,6 @@ export default async function createApp(options) {
 
   options.templateDirectory = templateDir;
 
-  console.log(`import.meta`, import.meta);
-  console.log(`currentFileUrl`, currentFileUrl);
-  console.log(`templateDir`, templateDir);
   console.log(`options`, options);
 
   try {
@@ -71,16 +64,14 @@ export default async function createApp(options) {
 
   const tasks = new Listr([
     {
-      title: "Copy project files",
-      task: () => copyTemplateFiles(options),
-    },
-
-    {
       title: "Initialize git",
       task: () => initGit(options),
       enabled: () => options.git,
     },
-
+    {
+      title: "Copy project files",
+      task: () => copyTemplateFiles(options),
+    },
     {
       title: "Install dependencies",
       task: () =>
