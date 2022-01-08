@@ -16,6 +16,7 @@ import fs from "fs";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
+// TODO: Copy src files from template
 async function copyTemplateFiles(options) {
   return await copy(options.templateDirectory, options.targetDirectory, {
     clobber: false,
@@ -32,6 +33,17 @@ async function initGit(options) {
   }
 
   return;
+}
+
+async function createNextApp(options) {
+  const ts = options['template'] === 'Typescript' ? '--typescript' : '';
+  const result = await execa("npx", ["create-next-app", options.name, ts], {
+    cwd: options.targetDirectory,
+  });
+
+  if (result.failed) {
+    return Promise.reject(new Error("Failed to create Next app"));
+  }
 }
 
 export default async function createApp(options) {
@@ -67,9 +79,13 @@ export default async function createApp(options) {
       enabled: () => options.git,
     },
     {
-      title: "Copy project files",
-      task: () => copyTemplateFiles(options),
+      title: "Create Next.js app",
+      task: () => createNextApp(options),
     },
+    // {
+    //   title: "Copy project files",
+    //   task: () => copyTemplateFiles(options),
+    // },
     {
       title: "Install dependencies",
       task: () =>

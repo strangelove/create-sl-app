@@ -61,7 +61,7 @@ async function promptForMissingOptions(options) {
       type: "list",
       name: "template",
       message: "Please choose which project template to use",
-      choices: ["JavaScript", "TypeScript"],
+      choices: ["Javascript", "Typescript"],
       default: defaultTemplate,
     });
   }
