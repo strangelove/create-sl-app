@@ -13,11 +13,9 @@ import createApp from './main.js'
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
-      "--git": Boolean,
       "--yes": Boolean,
       "--install": Boolean,
       "--typescript": Boolean,
-      "-g": "--git",
       "-y": "--yes",
       "-i": "--install",
       "-t": "--typescript",
@@ -38,6 +36,8 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
+  const defaultProjectName = "my-app";
+  const questions = [];
   
   if (options.skipPrompts) {
     return {
@@ -46,13 +46,12 @@ async function promptForMissingOptions(options) {
     };
   }
   
-  const questions = [];
   if (!options.name) {
     questions.push({
       type: "input",
       name: "name",
       message: "What is your project named?",
-      default: 'my-app',
+      default: defaultProjectName,
     });
   }
 
@@ -66,20 +65,11 @@ async function promptForMissingOptions(options) {
     });
   }
   
-  if (!options.git) {
-    questions.push({
-      type: "confirm",
-      name: "git",
-      message: "Initialize a git repository?",
-      default: false,
-    });
-  }
-  
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
     template: options.template || answers.template,
-    git: options.git || answers.git,
+    name: options.name || answers.name,
   };
 }
 
