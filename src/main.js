@@ -1,4 +1,3 @@
-import { projectInstall } from "pkg-install";
 import { promisify } from "util";
 import execa from "execa";
 import Listr from "listr";
@@ -16,29 +15,34 @@ import fs from "fs";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
-// TODO: Copy src files from template
 async function copyTemplateFiles(options) {
-  return await copy(options.templateDirectory, options.targetDirectory, {
-    clobber: false,
-  });
-}
-
-async function initGit(options) {
-  const result = await execa("git", ["init"], {
-    cwd: options.targetDirectory,
-  });
-
-  if (result.failed) {
-    return Promise.reject(new Error("Failed to initialize git"));
-  }
-
-  return;
+  return await copy(
+    `${options.templateDirectory}/src`,
+    `${options.targetDirectory}/${options.name}`,
+    { clobber: false, }
+  );
 }
 
 async function createNextApp(options) {
   const ts = options['template'] === 'Typescript' ? '--typescript' : '';
   const result = await execa("npx", ["create-next-app", options.name, ts], {
     cwd: options.targetDirectory,
+  });
+
+  if (result.failed) {
+    return Promise.reject(new Error("Failed to create Next app"));
+  }
+}
+
+const initDependencies = [
+  "formik",
+  "sass",
+  "tailwindcss",
+];
+
+async function installDependencies(options) {
+  const result = await execa("npm", ["i", ...initDependencies], {
+    cwd: `${options.targetDirectory}/${options.name}`,
   });
 
   if (result.failed) {
@@ -61,9 +65,6 @@ export default async function createApp(options) {
 
   options.templateDirectory = templateDir;
 
-  console.log('currentFileUrl :>> ', currentFileUrl);
-  console.log(`options`, options);
-
   try {
     await access(templateDir, fs.constants.R_OK);
   } catch (err) {
@@ -74,28 +75,16 @@ export default async function createApp(options) {
 
   const tasks = new Listr([
     {
-      title: "Initialize git",
-      task: () => initGit(options),
-      enabled: () => options.git,
-    },
-    {
       title: "Create Next.js app",
       task: () => createNextApp(options),
     },
-    // {
-    //   title: "Copy project files",
-    //   task: () => copyTemplateFiles(options),
-    // },
     {
       title: "Install dependencies",
-      task: () =>
-        projectInstall({
-          cwd: options.targetDirectory,
-        }),
-      skip: () =>
-        !options.runInstall
-          ? "Pass --install to automatically install dependencies"
-          : undefined,
+      task: () => installDependencies(options),
+    },
+    {
+      title: "Copy project files",
+      task: () => copyTemplateFiles(options),
     },
   ]);
 
