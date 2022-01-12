@@ -14,10 +14,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       "--yes": Boolean,
-      "--install": Boolean,
       "--typescript": Boolean,
       "-y": "--yes",
-      "-i": "--install",
       "-t": "--typescript",
     },
     {
