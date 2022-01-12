@@ -7,19 +7,20 @@ import ncp from "ncp";
 import fs from "fs";
 
 /*
-  1- Copy template files.
-  2- Initialize git.
+  1- Create Next.js app.
+  2- Copy template files.
   3- Install dependencies. 
 */
 
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
+// TODO : delete pages & styles -> create src -> copy template files
 async function copyTemplateFiles(options) {
   return await copy(
     `${options.templateDirectory}/src`,
     `${options.targetDirectory}/${options.name}`,
-    { clobber: false, }
+    { clobber: true, }
   );
 }
 
@@ -38,12 +39,31 @@ const initDependencies = [
   "formik",
   "sass",
   "tailwindcss",
+  "postcss",
+  "autoprefixer",
 ];
 
 async function installDependencies(options) {
   const result = await execa("npm", ["i", ...initDependencies], {
     cwd: `${options.targetDirectory}/${options.name}`,
   });
+
+  /*
+  Install styles dependencies: 
+    1- npm i tailwindcss postcss autoprefixer sass -D
+    2- npx tailwindcss init -p
+    3- copy tailwind.config.js
+ */
+
+  // const tailwindConfig = `${options.targetDirectory}/${options.name}/tailwind.config.js`;
+  // const tailwindConfigExists = await access(tailwindConfig, fs.constants.F_OK);
+
+  // if (!tailwindConfigExists) {
+  //   await execa("npx", ["tailwindcss", "init", "-p"], {
+  //     cwd: `${options.targetDirectory}/${options.name}`,
+  //   });
+  // }
+
 
   if (result.failed) {
     return Promise.reject(new Error("Failed to create Next app"));
