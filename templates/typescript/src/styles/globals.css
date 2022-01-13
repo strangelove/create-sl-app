@@ -1,0 +1,32 @@
+/* TODO: Style layouts here */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  font-style: normal;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+/* @font-face {
+  font-display: optional;
+  font-family: '';
+  src: url('/fonts/<YOUR-FONT>');
+  font-display: swap;
+} */

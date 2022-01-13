@@ -13,12 +13,10 @@ import createApp from './main.js'
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
-      "--git": Boolean,
       "--yes": Boolean,
-      "--install": Boolean,
-      "-g": "--git",
+      "--typescript": Boolean,
       "-y": "--yes",
-      "-i": "--install",
+      "-t": "--typescript",
     },
     {
       argv: rawArgs.slice(2),
@@ -28,13 +26,16 @@ function parseArgumentsIntoOptions(rawArgs) {
   return {
     skipPrompts: args["--yes"] || false,
     git: args["--git"] || false,
-    template: args._[0],
+    name: args._[0],
+    template: args['--typescript'] ? 'Typescript' : undefined,
     runInstall: args["--install"] || false,
   };
 }
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
+  const defaultProjectName = "my-app";
+  const questions = [];
   
   if (options.skipPrompts) {
     return {
@@ -43,23 +44,22 @@ async function promptForMissingOptions(options) {
     };
   }
   
-  const questions = [];
+  if (!options.name) {
+    questions.push({
+      type: "input",
+      name: "name",
+      message: "What is your project named?",
+      default: defaultProjectName,
+    });
+  }
+
   if (!options.template) {
     questions.push({
       type: "list",
       name: "template",
       message: "Please choose which project template to use",
-      choices: ["JavaScript", "TypeScript"],
+      choices: ["Javascript", "Typescript"],
       default: defaultTemplate,
-    });
-  }
-  
-  if (!options.git) {
-    questions.push({
-      type: "confirm",
-      name: "git",
-      message: "Initialize a git repository?",
-      default: false,
     });
   }
   
@@ -67,7 +67,7 @@ async function promptForMissingOptions(options) {
   return {
     ...options,
     template: options.template || answers.template,
-    git: options.git || answers.git,
+    name: options.name || answers.name,
   };
 }
 
