@@ -6,26 +6,40 @@ import path from "path";
 import ncp from "ncp";
 import fs from "fs";
 
-/*
-  1- Create Next.js app.
-  2- Copy template files.
-  3- Install dependencies. 
+/* STEPS :
+  1- Create Next.js app
+  2- Install dependencies :
+      - Styles (sass & tailwind)
+      - Contentful
+      - Formik
+  3- Restructure files: 
+      - Delete pages & styles directories
+      - Create src directory
+      - Delete tailwind.config.js
+  3- Copy template files: 
+      - src
+      - env files
+      - tailwind.config.js
+      - next.config.js
+      - tsconfig.json
 */
 
 const access = promisify(fs.access);
 const copy = promisify(ncp);
+const mkdir = promisify(fs.mkdir);
 
-// TODO : delete pages & styles -> create src -> copy template files
-async function copyTemplateFiles(options) {
-  return await copy(
-    `${options.templateDirectory}/src`,
-    `${options.targetDirectory}/${options.name}`,
-    { clobber: true, }
-  );
-}
+const dependencies = ["formik", "contentful"];
+const devDependencies = [
+  "sass",
+  "tailwindcss",
+  "postcss",
+  "autoprefixer",
+];
 
-async function createNextApp(options) {
+// Create Next.js app
+export async function createNextApp(options) {
   const ts = options['template'] === 'Typescript' ? '--typescript' : '';
+
   const result = await execa("npx", ["create-next-app", options.name, ts], {
     cwd: options.targetDirectory,
   });
@@ -35,38 +49,68 @@ async function createNextApp(options) {
   }
 }
 
-const initDependencies = [
-  "formik",
-  "sass",
-  "tailwindcss",
-  "postcss",
-  "autoprefixer",
-];
+// Install dependencies
+export async function installPackages(options) {
+  const projectDir = `${options.targetDirectory}/${options.name}`
 
-async function installDependencies(options) {
-  const result = await execa("npm", ["i", ...initDependencies], {
-    cwd: `${options.targetDirectory}/${options.name}`,
-  });
+  try {
+    // - install dependencies
+    await execa("npm", ["i", ...dependencies], {
+      cwd: projectDir,
+    });
 
-  /*
-  Install styles dependencies: 
-    1- npm i tailwindcss postcss autoprefixer sass -D
-    2- npx tailwindcss init -p
-    3- copy tailwind.config.js
- */
+    // - install dev dependencies  
+    await execa("npm", ["install", "--save-dev", ...devDependencies], {
+      cwd: projectDir,
+    });
 
-  // const tailwindConfig = `${options.targetDirectory}/${options.name}/tailwind.config.js`;
-  // const tailwindConfigExists = await access(tailwindConfig, fs.constants.F_OK);
+    // - init tailwind config files
+    await execa("npx", ["tailwindcss", "init", "-p"], {
+      cwd: projectDir,
+    });
+  } catch (error) {
+    return Promise.reject(new Error("Failed to install dependencies", error));
+  }
+}
 
-  // if (!tailwindConfigExists) {
-  //   await execa("npx", ["tailwindcss", "init", "-p"], {
-  //     cwd: `${options.targetDirectory}/${options.name}`,
-  //   });
-  // }
+// Restructure files
+export async function structureFiles(options) {
+  const rootDir = `${options.targetDirectory}/${options.name}`;
 
+  try {
+    await access(rootDir, fs.constants.F_OK);
 
-  if (result.failed) {
-    return Promise.reject(new Error("Failed to create Next app"));
+    // create src
+    await mkdir(`${rootDir}/src`, { recursive: true })
+
+    // Delete pages & styles directories
+    await execa("rm", ["-rf", `${rootDir}/pages`, `${rootDir}/styles`], {
+      cwd: rootDir,
+    });
+  } catch (error) {
+    return Promise.reject(new Error("Failed to structure files", error));
+  }
+}
+
+// Copy template files
+export async function copyTemplateFiles(options) {
+  try {
+    // copy src files
+    await copy(
+      `${options.templateDirectory}/src`,
+      `${options.targetDirectory}/${options.name}/src`,
+      { clobber: true, }
+    );
+
+    // copy config files
+    await copy(
+      `${options.templateDirectory}/config`,
+      `${options.targetDirectory}/${options.name}`,
+      { clobber: true, }
+    );
+
+  } catch (error) {
+    return Promise.reject(new Error("Failed to copy template files", error));
   }
 }
 
@@ -89,7 +133,6 @@ export default async function createApp(options) {
     await access(templateDir, fs.constants.R_OK);
   } catch (err) {
     console.error("%s Invalid template name", chalk.red.bold("ERROR"));
-
     process.exit(1);
   }
 
@@ -99,8 +142,12 @@ export default async function createApp(options) {
       task: () => createNextApp(options),
     },
     {
-      title: "Install dependencies",
-      task: () => installDependencies(options),
+      title: "Install packages",
+      task: () => installPackages(options),
+    },
+    {
+      title: "Structure project files",
+      task: () => structureFiles(options),
     },
     {
       title: "Copy project files",
