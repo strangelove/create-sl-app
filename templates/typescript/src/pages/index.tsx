@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { H1 } from "src/components/typography";
+import { H1 } from "../components/typography";
 
 const Home: NextPage = () => {
   return (
