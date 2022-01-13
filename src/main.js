@@ -15,7 +15,6 @@ import fs from "fs";
   3- Restructure files: 
       - Delete pages & styles directories
       - Create src directory
-      - Delete tailwind.config.js
   3- Copy template files: 
       - src
       - env files
