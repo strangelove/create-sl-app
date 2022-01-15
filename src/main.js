@@ -9,6 +9,7 @@ import {
   installPackages,
   structureFiles,
   copyTemplateFiles,
+  initContentful,
 } from "./lib";
 
 /* STEPS :
@@ -30,6 +31,16 @@ import {
 
 const access = promisify(fs.access);
 
+const dependencies = {
+  main: ["formik"],
+  dev: ["sass", "tailwindcss", "postcss", "autoprefixer", "dotenv"],
+  ctfDev: [
+    "@contentful/rich-text-from-markdown",
+    "@contentful/rich-text-react-renderer",
+    "@contentful/rich-text-types",
+  ],
+};
+
 export default async function createApp(options) {
   options = {
     ...options,
@@ -44,6 +55,8 @@ export default async function createApp(options) {
   );
 
   options.templateDirectory = templateDir;
+  if (options.contentful)
+    dependencies.main.push("contentful", "graphql-request");
 
   try {
     await access(templateDir, fs.constants.R_OK);
@@ -58,8 +71,13 @@ export default async function createApp(options) {
       task: () => createNextApp(options),
     },
     {
+      title: "Initialize Contentful",
+      task: () => initContentful(options, dependencies),
+      enabled: () => options.contentful,
+    },
+    {
       title: "Install packages",
-      task: () => installPackages(options),
+      task: () => installPackages(options, dependencies),
     },
     {
       title: "Structure project files",
@@ -73,6 +91,7 @@ export default async function createApp(options) {
 
   await tasks.run();
   console.log("%s Project ready", chalk.green.bold("DONE"));
+  console.log(`%s cd ${options.name} & npm run dev`, chalk.cyanBright("RUN"));
 
   return true;
 }

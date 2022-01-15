@@ -1,7 +1,7 @@
 import arg from "arg";
 import inquirer from "inquirer";
 
-import createApp from './main.js'
+import createApp from "./main.js";
 
 /*
   1- Recive the command line arguments
@@ -10,40 +10,22 @@ import createApp from './main.js'
   4- Create the app
 */
 
-function parseArgumentsIntoOptions(rawArgs) {
-  const args = arg(
-    {
-      "--yes": Boolean,
-      "--typescript": Boolean,
-      "-y": "--yes",
-      "-t": "--typescript",
-    },
-    {
-      argv: rawArgs.slice(2),
-    }
-  );
-
-  return {
-    skipPrompts: args["--yes"] || false,
-    git: args["--git"] || false,
-    name: args._[0],
-    template: args['--typescript'] ? 'Typescript' : undefined,
-    runInstall: args["--install"] || false,
-  };
-}
-
+/* 
+  A function that prompts the user for any missing options and returns 
+  a new options object with the user's answers
+*/
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
   const defaultProjectName = "my-app";
   const questions = [];
-  
+
   if (options.skipPrompts) {
     return {
       ...options,
       template: options.template || defaultTemplate,
     };
   }
-  
+
   if (!options.name) {
     questions.push({
       type: "input",
@@ -62,17 +44,56 @@ async function promptForMissingOptions(options) {
       default: defaultTemplate,
     });
   }
-  
+
+  if (!options.contentful) {
+    questions.push({
+      type: "confirm",
+      name: "contentful",
+      message: "Do you want to use Contentful CMS?",
+      default: false,
+    });
+  }
+
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
     template: options.template || answers.template,
     name: options.name || answers.name,
+    contentful: options.contentful || answers.contentful,
+  };
+}
+
+/* 
+  Higher Order Function that parses the command line arguments
+  into options object, then passes it to a its callback param 
+*/
+function withParsedArgsIntoOpts(callback) {
+  return async (rawArgs) => {
+    const args = arg(
+      {
+        "--yes": Boolean,
+        "--typescript": Boolean,
+        "--contentful": Boolean,
+        "-y": "--yes",
+        "-t": "--typescript",
+        "-ctf": "--contentful",
+      },
+      {
+        argv: rawArgs.slice(2),
+      }
+    );
+
+    return await callback({
+      skipPrompts: args["--yes"] || false,
+      git: args["--git"] || false,
+      name: args._[0],
+      template: args["--typescript"] ? "Typescript" : undefined,
+      contentful: args["--contentful"] || false,
+    });
   };
 }
 
 export async function cli(args) {
-  let options = parseArgumentsIntoOptions(args);
-  options = await promptForMissingOptions(options);
-  await createApp(options)
+  const options = await withParsedArgsIntoOpts(promptForMissingOptions)(args);
+  return await createApp(options);
 }

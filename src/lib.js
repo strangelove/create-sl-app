@@ -7,17 +7,9 @@ const access = promisify(fs.access);
 const copy = promisify(ncp);
 const mkdir = promisify(fs.mkdir);
 
-const dependencies = ["formik", "contentful"];
-const devDependencies = [
-  "sass",
-  "tailwindcss",
-  "postcss",
-  "autoprefixer",
-];
-
 // Create Next.js app
 export async function createNextApp(options) {
-  const ts = options['template'] === 'Typescript' ? '--typescript' : '';
+  const ts = options["template"] === "Typescript" ? "--typescript" : "";
 
   const result = await execa("npx", ["create-next-app", options.name, ts], {
     cwd: options.targetDirectory,
@@ -28,18 +20,34 @@ export async function createNextApp(options) {
   }
 }
 
+// Initialize Contentful
+export async function initContentful(options, { ctfDev }) {
+  const projectDir = `${options.targetDirectory}/${options.name}`;
+
+  try {
+    // - install Contentful SDKs
+    await execa("npm", ["i", "--save-dev", ...ctfDev], {
+      cwd: projectDir,
+    });
+  } catch (error) {
+    return Promise.reject(
+      new Error("Failed to install Contentful SDKs", error)
+    );
+  }
+}
+
 // Install dependencies
-export async function installPackages(options) {
-  const projectDir = `${options.targetDirectory}/${options.name}`
+export async function installPackages(options, { main, dev }) {
+  const projectDir = `${options.targetDirectory}/${options.name}`;
 
   try {
     // - install dependencies
-    await execa("npm", ["i", ...dependencies], {
+    await execa("npm", ["i", ...main], {
       cwd: projectDir,
     });
 
-    // - install dev dependencies  
-    await execa("npm", ["install", "--save-dev", ...devDependencies], {
+    // - install dev dependencies
+    await execa("npm", ["install", "--save-dev", ...dev], {
       cwd: projectDir,
     });
 
@@ -60,7 +68,7 @@ export async function structureFiles(options) {
     await access(rootDir, fs.constants.F_OK);
 
     // create src
-    await mkdir(`${rootDir}/src`, { recursive: true })
+    await mkdir(`${rootDir}/src`, { recursive: true });
 
     // Delete pages & styles directories
     await execa("rm", ["-rf", `${rootDir}/pages`, `${rootDir}/styles`], {
@@ -73,21 +81,36 @@ export async function structureFiles(options) {
 
 // Copy template files
 export async function copyTemplateFiles(options) {
+  const rootDir = `${options.targetDirectory}/${options.name}`;
+
   try {
+    await access(rootDir, fs.constants.F_OK);
+
     // copy src files
     await copy(
       `${options.templateDirectory}/src`,
-      `${options.targetDirectory}/${options.name}/src`,
-      { clobber: true, }
+      `${rootDir}/src`,
+      { clobber: true }
     );
 
     // copy config files
     await copy(
       `${options.templateDirectory}/config`,
-      `${options.targetDirectory}/${options.name}`,
-      { clobber: true, }
+      `${rootDir}`,
+      { clobber: true }
     );
 
+    if (options.contentful) {
+      // create services directory
+      await mkdir(`${rootDir}/src/services`, { recursive: true });
+
+      // copy contentful files
+      await copy(
+        `${options.templateDirectory}/services/contentful`,
+        `${rootDir}/src/services/contentful`,
+        { clobber: true }
+      );
+    }
   } catch (error) {
     return Promise.reject(new Error("Failed to copy template files", error));
   }
