@@ -1,0 +1,9 @@
+overwrite: true
+schema:
+  - https://graphql.contentful.com/content/v1/spaces/${NEXT_PUBLIC_CONTENTFUL_SPACE_ID}:
+      headers:
+        Authorization: "Bearer ${NEXT_PUBLIC_CDA_ACCESS_TOKEN}"
+generates:
+  src/interfaces/schema.ts:
+    plugins:
+      - typescript

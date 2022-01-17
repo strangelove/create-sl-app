@@ -1,4 +1,4 @@
-import { getHomePageData } from "@/services/contentful/api";
+// import { getHomePageData } from "@/services/contentful/api";
 import { H1 } from "@/components/typography";
 import PageProps from '@/interfaces/page'
 
@@ -17,13 +17,13 @@ const Home = ({ data, error }: PageProps<any>) => {
 };
 
 export async function getStaticProps({ preview }: any) {
-  const isPreview: boolean = !!preview ?? false
-  const { data, error } = await getHomePageData(isPreview);
+  // const isPreview: boolean = !!preview ?? false
+  // const { data, error } = await getHomePageData(isPreview);
 
   return {
     props: {
-      data,
-      error
+      // data,
+      // error
     },
   };
 }

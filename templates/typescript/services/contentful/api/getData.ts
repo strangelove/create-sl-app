@@ -1,9 +1,9 @@
 import createClient from "./client";
 
 /*
- * The fetchData creates a client and makes a request to the Contentful API.
- * The getData function returns refactored data object.
- */
+ * fetchData() creates a client and makes a request to the Contentful API.
+ * getData() function returns refactored data object.
+*/
 
 export interface QueryArgs {
   query: string;
@@ -20,7 +20,6 @@ function fetchData<DataType>(
   isPreview: boolean
 ): Promise<DataType> {
   const client = createClient(isPreview);
-
   return client.request<DataType>(query);
 }
 
