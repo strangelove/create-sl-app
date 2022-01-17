@@ -38,6 +38,9 @@ const dependencies = {
     "@contentful/rich-text-from-markdown",
     "@contentful/rich-text-react-renderer",
     "@contentful/rich-text-types",
+    "@graphql-codegen/cli",
+    "@graphql-codegen/typescript",
+    "graphql",
   ],
 };
 
@@ -90,8 +93,21 @@ export default async function createApp(options) {
   ]);
 
   await tasks.run();
+
   console.log("%s Project ready", chalk.green.bold("DONE"));
-  console.log(`%s cd ${options.name} & npm run dev`, chalk.cyanBright("RUN"));
+
+  if (options.contentful) {
+    console.log(
+      `%s create ${chalk.greenBright(
+        ".env.local"
+      )} file and add your Contentful credentials before running ${chalk.cyanBright(
+        `npm run dev`
+      )}`,
+      chalk.bgRed.white("IMPORTANT")
+    );
+  } else {
+    console.log(`%s cd ${options.name} & npm run dev`, chalk.cyanBright("RUN"));
+  }
 
   return true;
 }

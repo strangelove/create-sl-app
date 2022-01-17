@@ -4,6 +4,8 @@ import ncp from "ncp";
 import fs from "fs";
 
 const access = promisify(fs.access);
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 const copy = promisify(ncp);
 const mkdir = promisify(fs.mkdir);
 
@@ -22,96 +24,131 @@ export async function createNextApp(options) {
 
 // Initialize Contentful
 export async function initContentful(options, { ctfDev }) {
-  const projectDir = `${options.targetDirectory}/${options.name}`;
+  const projectRootDir = `${options.targetDirectory}/${options.name}`;
+  const devScript = "npm run gen && next dev";
+  const genScript =
+    "DOTENV_CONFIG_PATH=./.env.local graphql-codegen --require dotenv/config --config codegen.yml";
 
   try {
-    // - install Contentful SDKs
+    // install Contentful SDKs
     await execa("npm", ["i", "--save-dev", ...ctfDev], {
-      cwd: projectDir,
+      cwd: projectRootDir,
     });
+
+    await access(projectRootDir, fs.constants.F_OK);
+
+    // Read the package.json
+    const packageJson = JSON.parse(
+      await readFile(`${projectRootDir}/package.json`, "utf8")
+    );
+
+    // Update the dev script and add gen script
+    packageJson.scripts.dev = devScript;
+    packageJson.scripts.gen = genScript;
+
+    // Write the new package.json
+    await writeFile(
+      `${projectRootDir}/package.json`,
+      JSON.stringify(packageJson, null, 2)
+    );
   } catch (error) {
     return Promise.reject(
-      new Error("Failed to install Contentful SDKs", error)
+      new Error(`Failed to install Contentful SDKs: ${error.message}`)
     );
   }
 }
 
 // Install dependencies
 export async function installPackages(options, { main, dev }) {
-  const projectDir = `${options.targetDirectory}/${options.name}`;
+  const projectRootDir = `${options.targetDirectory}/${options.name}`;
 
   try {
     // - install dependencies
     await execa("npm", ["i", ...main], {
-      cwd: projectDir,
+      cwd: projectRootDir,
     });
 
     // - install dev dependencies
     await execa("npm", ["install", "--save-dev", ...dev], {
-      cwd: projectDir,
+      cwd: projectRootDir,
     });
 
     // - init tailwind config files
     await execa("npx", ["tailwindcss", "init", "-p"], {
-      cwd: projectDir,
+      cwd: projectRootDir,
     });
   } catch (error) {
-    return Promise.reject(new Error("Failed to install dependencies", error));
+    return Promise.reject(
+      new Error(`Failed to install dependencies: ${error.message}`)
+    );
   }
 }
 
 // Restructure files
 export async function structureFiles(options) {
-  const rootDir = `${options.targetDirectory}/${options.name}`;
+  const projectRootDir = `${options.targetDirectory}/${options.name}`;
 
   try {
-    await access(rootDir, fs.constants.F_OK);
+    await access(projectRootDir, fs.constants.F_OK);
 
     // create src
-    await mkdir(`${rootDir}/src`, { recursive: true });
+    await mkdir(`${projectRootDir}/src`, { recursive: true });
 
     // Delete pages & styles directories
-    await execa("rm", ["-rf", `${rootDir}/pages`, `${rootDir}/styles`], {
-      cwd: rootDir,
-    });
+    await execa(
+      "rm",
+      ["-rf", `${projectRootDir}/pages`, `${projectRootDir}/styles`],
+      {
+        cwd: projectRootDir,
+      }
+    );
   } catch (error) {
-    return Promise.reject(new Error("Failed to structure files", error));
+    return Promise.reject(
+      new Error(`Failed to structure files: ${error.message}`)
+    );
   }
 }
 
 // Copy template files
 export async function copyTemplateFiles(options) {
-  const rootDir = `${options.targetDirectory}/${options.name}`;
+  const projectRootDir = `${options.targetDirectory}/${options.name}`;
 
   try {
-    await access(rootDir, fs.constants.F_OK);
+    await access(projectRootDir, fs.constants.F_OK);
 
     // copy src files
-    await copy(
-      `${options.templateDirectory}/src`,
-      `${rootDir}/src`,
-      { clobber: true }
-    );
+    await copy(`${options.templateDirectory}/src`, `${projectRootDir}/src`, {
+      clobber: true,
+    });
 
     // copy config files
-    await copy(
-      `${options.templateDirectory}/config`,
-      `${rootDir}`,
-      { clobber: true }
-    );
+    await copy(`${options.templateDirectory}/config`, `${projectRootDir}`, {
+      clobber: true,
+    });
 
     if (options.contentful) {
+      // copy codegen.yml file
+      await copy(
+        `${options.templateDirectory}/codegen.yml`,
+        `${projectRootDir}/codegen.yml`,
+        {
+          clobber: true,
+        }
+      );
+
       // create services directory
-      await mkdir(`${rootDir}/src/services`, { recursive: true });
+      await mkdir(`${projectRootDir}/src/services`, { recursive: true });
 
       // copy contentful files
       await copy(
         `${options.templateDirectory}/services/contentful`,
-        `${rootDir}/src/services/contentful`,
+        `${projectRootDir}/src/services/contentful`,
         { clobber: true }
       );
     }
   } catch (error) {
-    return Promise.reject(new Error("Failed to copy template files", error));
+    return Promise.reject(
+      new Error(`Failed to copy template files: ${error.message}`)
+    );
   }
 }
