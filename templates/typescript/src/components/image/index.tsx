@@ -5,7 +5,7 @@ interface Props extends ImageProps {
   cn?: string;
 }
 
-export const Image = ({
+const Image = ({
   cn = "",
   src,
   width,
@@ -35,3 +35,5 @@ export const Image = ({
     </div>
   );
 };
+
+export default Image;

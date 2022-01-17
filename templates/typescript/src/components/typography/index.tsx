@@ -38,3 +38,16 @@ export const P2 = ({ children, className = '' }: TypographyProps) => (
     {children}
   </p>
 )
+
+export const Bold = ({ children, className = '' }: TypographyProps) => (
+  <b className={`${className}`}>
+    {children}
+  </b>
+)
+
+export const Italic = ({ children, className = '' }: TypographyProps) => (
+  <i className={`${className}`}>
+    {children}
+  </i>
+)
+
