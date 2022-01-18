@@ -1,4 +1,3 @@
-// import { getHomePageData } from "@/services/contentful/api";
 import { H1 } from "@/components/typography";
 import PageProps from '@/interfaces/page'
 
@@ -6,7 +5,7 @@ import PageProps from '@/interfaces/page'
   * NOTE: Replace type <any> in PageProps<any> with page specific props type.
   * Example: <HomePageProps>. Then remove this comment :)
 */
-const Home = ({ data, error }: PageProps<any>) => {
+const Home = ({ }: PageProps<any>) => {
   return (
     <div id="container" className="w-full h-full">
       <H1>
@@ -16,7 +15,8 @@ const Home = ({ data, error }: PageProps<any>) => {
   );
 };
 
-export async function getStaticProps({ preview }: any) {
+export async function getStaticProps() {
+  // * NOTE: This an example of how to get data from Contentful in static pages.
   // const isPreview: boolean = !!preview ?? false
   // const { data, error } = await getHomePageData(isPreview);
 

@@ -84,6 +84,52 @@ export async function installPackages(options, { main, dev }) {
   }
 }
 
+// Setup pre-commit hooks with husky
+export async function setupHusky(options) {
+  const projectRootDir = `${options.targetDirectory}/${options.name}`;
+  const preCommitScript = "npm run lint --fix && git add -A .";
+  const preCommitHook = "npm run pre-commit";
+
+  try {
+    // - init husky config files
+    await execa("npm", ["set-script", "prepare", "husky install"], {
+      cwd: projectRootDir,
+    }).then(() => {
+      execa("npm", ["run", "prepare"], {
+        cwd: projectRootDir,
+      }).then(() => {
+        execa(
+          "npx",
+          ["husky", "add", ".husky/pre-commit", `${preCommitHook}`],
+          {
+            cwd: projectRootDir,
+          }
+        );
+      });
+    });
+
+    // Read the package.json
+    await access(projectRootDir, fs.constants.F_OK);
+
+    const packageJson = JSON.parse(
+      await readFile(`${projectRootDir}/package.json`, "utf8")
+    );
+
+    // Add pre-commit script
+    packageJson.scripts["pre-commit"] = preCommitScript;
+
+    // Write the new package.json
+    await writeFile(
+      `${projectRootDir}/package.json`,
+      JSON.stringify(packageJson, null, 2)
+    );
+  } catch (error) {
+    return Promise.reject(
+      new Error(`Failed to install husky: ${error.message}`)
+    );
+  }
+}
+
 // Restructure files
 export async function structureFiles(options) {
   const projectRootDir = `${options.targetDirectory}/${options.name}`;
