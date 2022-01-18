@@ -85,7 +85,6 @@ function withParsedArgsIntoOpts(callback) {
 
     return await callback({
       skipPrompts: args["--yes"] || false,
-      git: args["--git"] || false,
       name: args._[0],
       template: args["--typescript"] ? "Typescript" : undefined,
       contentful: args["--contentful"] || false,

@@ -7,3 +7,4 @@ generates:
   src/interfaces/schema.ts:
     plugins:
       - typescript
+      

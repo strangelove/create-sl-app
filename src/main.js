@@ -10,6 +10,7 @@ import {
   structureFiles,
   copyTemplateFiles,
   initContentful,
+  setupHusky,
 } from "./lib";
 
 /* STEPS :
@@ -21,7 +22,7 @@ import {
   3- Restructure files: 
       - Delete pages & styles directories
       - Create src directory
-  3- Copy template files: 
+  4- Copy template files: 
       - src
       - env files
       - tailwind.config.js
@@ -33,7 +34,16 @@ const access = promisify(fs.access);
 
 const dependencies = {
   main: ["formik"],
-  dev: ["sass", "tailwindcss", "postcss", "autoprefixer", "dotenv"],
+  dev: [
+    "sass",
+    "tailwindcss",
+    "postcss",
+    "autoprefixer",
+    "dotenv",
+    "husky",
+    "lint-staged",
+    "prettier",
+  ],
   ctfDev: [
     "@contentful/rich-text-from-markdown",
     "@contentful/rich-text-react-renderer",
@@ -81,6 +91,10 @@ export default async function createApp(options) {
     {
       title: "Install packages",
       task: () => installPackages(options, dependencies),
+    },
+    {
+      title: "Setup eslint with Husky",
+      task: () => setupHusky(options),
     },
     {
       title: "Structure project files",
