@@ -9,11 +9,11 @@ components, and pre-commit hooks.
 
 ## List of dependencies:
 
-- `[inquirer](https://www.npmjs.com/package/inquirer)` for complex input prompts.
-- `[arg](https://www.npmjs.com/package/arg)` to parse our CLI arguments
-- `[listr](http://npm.im/listr)` for progress lists.
-- `[ncp](https://www.npmjs.com/package/ncp)` Asynchronous recursive file & directory copying.
-- `[esm](https://www.npmjs.com/package/esm)` ECMAScript module loader.
+- [inquirer](https://www.npmjs.com/package/inquirer) for complex input prompts.
+- [arg](https://www.npmjs.com/package/arg) to parse our CLI arguments
+- [listr](http://npm.im/listr) for progress lists.
+- [ncp](https://www.npmjs.com/package/ncp) Asynchronous recursive file & directory copying.
+- [esm](https://www.npmjs.com/package/esm) ECMAScript module loader.
 
 </br>
 
