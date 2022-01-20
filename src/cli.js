@@ -15,14 +15,16 @@ import createApp from "./main.js";
   a new options object with the user's answers
 */
 async function promptForMissingOptions(options) {
-  const defaultTemplate = "JavaScript";
+  const defaultTemplate = "Typescript";
   const defaultProjectName = "my-app";
   const questions = [];
 
   if (options.skipPrompts) {
     return {
       ...options,
+      name: options.name || defaultProjectName,
       template: options.template || defaultTemplate,
+      contentful: options.contentful || true,
     };
   }
 
@@ -50,7 +52,7 @@ async function promptForMissingOptions(options) {
       type: "confirm",
       name: "contentful",
       message: "Do you want to use Contentful CMS?",
-      default: false,
+      default: true,
     });
   }
 
@@ -76,7 +78,7 @@ function withParsedArgsIntoOpts(callback) {
         "--contentful": Boolean,
         "-y": "--yes",
         "-t": "--typescript",
-        "-ctf": "--contentful",
+        "-c": "--contentful",
       },
       {
         argv: rawArgs.slice(2),
