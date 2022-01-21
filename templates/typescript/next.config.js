@@ -30,7 +30,7 @@ module.exports = {
     domains: ["images.ctfassets.net"],
   },
   webpack(config) {
-    config.plugins.push(new webpack.EnvironmentPlugin(localEnv));
+    config.plugins.push(new webpack.EnvironmentPlugin(localEnv || {}));
     return config;
   },
 };

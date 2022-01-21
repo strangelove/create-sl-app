@@ -10,6 +10,7 @@ import {
   structureFiles,
   copyTemplateFiles,
   initContentful,
+  setupHusky,
 } from "./lib";
 
 /* STEPS :
@@ -21,7 +22,7 @@ import {
   3- Restructure files: 
       - Delete pages & styles directories
       - Create src directory
-  3- Copy template files: 
+  4- Copy template files: 
       - src
       - env files
       - tailwind.config.js
@@ -33,11 +34,23 @@ const access = promisify(fs.access);
 
 const dependencies = {
   main: ["formik"],
-  dev: ["sass", "tailwindcss", "postcss", "autoprefixer", "dotenv"],
+  dev: [
+    "sass",
+    "tailwindcss",
+    "postcss",
+    "autoprefixer",
+    "dotenv",
+    "husky",
+    "lint-staged",
+    "prettier",
+  ],
   ctfDev: [
     "@contentful/rich-text-from-markdown",
     "@contentful/rich-text-react-renderer",
     "@contentful/rich-text-types",
+    "@graphql-codegen/cli",
+    "@graphql-codegen/typescript",
+    "graphql",
   ],
 };
 
@@ -80,6 +93,10 @@ export default async function createApp(options) {
       task: () => installPackages(options, dependencies),
     },
     {
+      title: "Setup eslint with Husky",
+      task: () => setupHusky(options),
+    },
+    {
       title: "Structure project files",
       task: () => structureFiles(options),
     },
@@ -90,8 +107,21 @@ export default async function createApp(options) {
   ]);
 
   await tasks.run();
+
   console.log("%s Project ready", chalk.green.bold("DONE"));
-  console.log(`%s cd ${options.name} & npm run dev`, chalk.cyanBright("RUN"));
+
+  if (options.contentful) {
+    console.log(
+      `%s create ${chalk.greenBright(
+        ".env.local"
+      )} file and add your Contentful credentials before running ${chalk.cyanBright(
+        `npm run dev`
+      )}`,
+      chalk.bgRed.white("IMPORTANT")
+    );
+  } else {
+    console.log(`%s cd ${options.name} & npm run dev`, chalk.cyanBright("RUN"));
+  }
 
   return true;
 }

@@ -2,6 +2,7 @@ import { useFormik } from "formik";
 
 interface FormProps<T> {
   initValues: T;
+  // eslint-disable-next-line no-unused-vars
   submitForm: (values: T) => void;
 }
 

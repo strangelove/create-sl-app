@@ -3,6 +3,7 @@ import { default as NextLink, LinkProps } from "next/link";
 interface Props extends LinkProps {
   cn?: string;
   children: React.ReactNode;
+  // eslint-disable-next-line no-unused-vars
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
