@@ -4,7 +4,7 @@
   @return math.div($num, ($num * 0 + 1));
 }
 
-// 1eem = 16px, default setting of the browser
+// 1em = 16px, default setting of the browser
 $em-base: 16 !default;
 
 // This function works on converting px to em
