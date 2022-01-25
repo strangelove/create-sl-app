@@ -1,0 +1,45 @@
+// This file includes scss helper functions
+
+@function strip-unit($num) {
+  @return math.div($num, ($num * 0 + 1));
+}
+
+// 1eem = 16px, default setting of the browser
+$em-base: 16 !default;
+
+// This function works on converting px to em
+@function pixel-to-em($pixels, $base: $em-base) {
+  $multiplier: if(unit($base) == em, 16, 1);
+  $divisor: strip-unit($base) * $multiplier;
+
+  $em-vals: ();
+  @each $val in $pixels {
+    $val-in-ems: math.div(strip-unit($val), $divisor) * 1em;
+    $em-vals: append($em-vals, $val-in-ems);
+  }
+
+  @if length($em-vals) == 1 {
+    @return nth($em-vals, 1);
+  } @else {
+    @return $em-vals;
+  }
+}
+
+// 1rem = 16px, default setting of the browser
+$rem-base: 16 !default;
+
+// This function works on converting px to rem
+@function pixel-to-rem($pixels) {
+  $rem-vals: ();
+  @each $val in $pixels {
+    @debug "val: #{$val}";
+    $val-in-rems: math.div(strip-unit($val), $rem-base) * 1rem;
+    $rem-vals: append($rem-vals, $val-in-rems);
+  }
+
+  @if length($rem-vals) == 1 {
+    @return nth($rem-vals, 1);
+  } @else {
+    @return $rem-vals;
+  }
+}
