@@ -1,0 +1,97 @@
+/*
+  TEXT MIXIN
+  If the $size / $lineHeight / $weight arguments are not empty,
+  then output the argument.
+*/
+
+@mixin text(
+  $size: null,
+  $lineHeight: null,
+  $letter_spacing: null,
+  $weight: null
+) {
+  @if $size != null {
+    font-size: $size;
+  }
+
+  @if $lineHeight != null {
+    line-height: $lineHeight;
+  }
+
+  @if $letter_spacing != null {
+    letter-spacing: $letter_spacing;
+  }
+
+  @if $weight != null {
+    font-weight: $weight;
+  }
+}
+
+/*----------------------------------------------------------------*/
+
+/*
+  MEDIA QUERIES MIXINS
+  Used to define the viewport width in a media query.
+*/
+
+@mixin min-width($threshold) {
+  @media screen and (min-width: scut-rem($threshold)) {
+    @content;
+  }
+}
+
+// Very Small devices
+@mixin xxs($threshold: $screen-xxs-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Small devices
+@mixin xs($threshold: $screen-xs-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Small devices
+@mixin sm($threshold: $screen-sm-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Medium devices
+@mixin md($threshold: $screen-md-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Large devices
+@mixin lg($threshold: $screen-lg-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Extra large devices
+@mixin xl($threshold: $screen-xl-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// XX large devices
+@mixin xxl($threshold: $screen-xxl-min) {
+  @media screen and (min-width: #{$threshold}) {
+    @content;
+  }
+}
+
+// Custom devices
+@mixin customBreakPoint($min, $max) {
+  @media screen and (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
