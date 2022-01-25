@@ -3,7 +3,7 @@ import { H1 } from "@/components/typography";
 const Home = () => {
   return (
     <div id="container" className="w-full h-full">
-      <H1>SL custom app ( Next.js - Typescript - Tailwind - SASS )</H1>
+      <H1>SL custom app ( Next.js - Javascript - Tailwind - SASS )</H1>
     </div>
   );
 };
