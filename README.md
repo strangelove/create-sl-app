@@ -84,10 +84,6 @@ MIT
 
 </br>
 
-## Author:
-[Sobhi Al Khuder](https://github.com/Sob7i)
-
-</br>
-
-## Collaborators:
-  Still waiting for :)
+## Authors:
+[Sobhi Al Khuder](https://github.com/Sob7i)</br>
+[Djimo van Berlo](https://github.com/Djimovanberlo)</br>
