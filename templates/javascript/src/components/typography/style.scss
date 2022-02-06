@@ -1,0 +1,15 @@
+#H1 {
+  @include text(75px, 77px, 5px, bold);
+}
+
+#H2 {
+  @include text(110px, 110px, 10px);
+}
+
+#P1 {
+  @include text(scut-em(20), 1.5);
+}
+
+#P2 {
+  @include text(scut-em(16), 1.5);
+}
