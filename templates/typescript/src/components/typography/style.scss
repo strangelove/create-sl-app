@@ -7,9 +7,9 @@
 }
 
 #P1 {
-  @include text(scut-em(20), 1.5);
+  @include text(pixel-to-em(20), 1.5);
 }
 
 #P2 {
-  @include text(scut-em(16), 1.5);
+  @include text(pixel-to-em(16), 1.5);
 }
