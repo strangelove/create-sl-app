@@ -36,7 +36,7 @@
 */
 
 @mixin min-width($threshold) {
-  @media screen and (min-width: scut-rem($threshold)) {
+  @media screen and (min-width: pixel-to-em($threshold)) {
     @content;
   }
 }
