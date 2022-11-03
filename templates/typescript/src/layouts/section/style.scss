@@ -1,6 +1,20 @@
-$max-width: 1280px;
-
 .section {
   width: 100%;
-  padding: 0 calc((100% - $max-width) / 2);
+}
+
+.wrapper {
+  @include make-grid($space-10, 4);
+  @include wrapper-margin($space-10, $max-width-sm);
+
+  @include screen-md {
+    max-width: $max-width-md;
+    @include wrapper-margin($space-40, $max-width-md);
+    @include make-grid($space-10, 8);
+  }
+
+  @include screen-xl {
+    max-width: $max-width-xl;
+    @include wrapper-margin($space-80, $max-width-xl);
+    @include make-grid($space-10, 12);
+  }
 }

@@ -4,50 +4,33 @@ interface TypographyProps {
 }
 
 export const H1 = ({ children, className = '' }: TypographyProps) => (
-  <h1 className={`${className}`} id="H1">
-    {children}
-  </h1>
+  <h1 className={`H1 ${className}`}>{children}</h1>
 )
 
 export const H2 = ({ children, className = '' }: TypographyProps) => (
-  <h2 className={`${className}`} id="H2">
-    {children}
-  </h2>
+  <h2 className={`H2 ${className}`}>{children}</h2>
 )
 
 export const H3 = ({ children, className = '' }: TypographyProps) => (
-  <h3 className={`${className}`} id="H3">
-    {children}
-  </h3>
+  <h3 className={`H3 ${className}`}>{children}</h3>
 )
 
 export const H4 = ({ children, className = '' }: TypographyProps) => (
-  <h4 className={`${className}`} id="H4">
-    {children}
-  </h4>
+  <h4 className={`H4 ${className}`}>{children}</h4>
 )
 
 export const P1 = ({ children, className = '' }: TypographyProps) => (
-  <p className={`${className}`} id="P1">
-    {children}
-  </p>
+  <p className={`P1 ${className}`}>{children}</p>
 )
 
 export const P2 = ({ children, className = '' }: TypographyProps) => (
-  <p className={`${className}`} id="P2">
-    {children}
-  </p>
+  <p className={`P2${className}`}>{children}</p>
 )
 
 export const Bold = ({ children, className = '' }: TypographyProps) => (
-  <b className={`${className}`}>
-    {children}
-  </b>
+  <b className={`${className}`}>{children}</b>
 )
 
 export const Italic = ({ children, className = '' }: TypographyProps) => (
-  <i className={`${className}`}>
-    {children}
-  </i>
+  <i className={`${className}`}>{children}</i>
 )
-

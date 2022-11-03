@@ -97,8 +97,18 @@
 }
 
 // Make grid
-@mixin make-grid($row, $col, $gap) {
+@mixin make-grid($gap: null, $cols: null, $rows: null) {
   display: grid;
-  grid-template-rows: repeat($row, minmax(0, 1fr));
-  grid-template-columns: repeat($col, minmax(0, 1fr));
+
+  @if $gap != null {
+    gap: $gap;
+  }
+
+  @if $cols != null {
+    grid-template-columns: repeat($cols, minmax(0, 1fr));
+  }
+
+  @if $rows != null {
+    grid-template-rows: repeat($rows, minmax(0, 1fr));
+  }
 }
