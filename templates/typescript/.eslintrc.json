@@ -1,8 +1,24 @@
 {
-  "extends": ["next", "next/core-web-vitals"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["next", "next/core-web-vitals", "eslint:recommended"],
   "rules": {
-    "no-unused-vars": "error",
-    "indent": ["error", 2],
-    "no-console": ["error", { "allow": ["warn", "error"] }]
-  }
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
+    "indent": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+      ],
+
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    }
+  ]
 }

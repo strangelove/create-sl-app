@@ -1,9 +1,14 @@
 @charset 'utf-8';
 @use 'sass:math';
 
-@import "./variables";
-@import "./functions";
-@import "./mixins";
+@import './variables';
+@import './functions';
+@import './mixins';
+
+/* Layout style sheets */
+@import '../layouts/main/style.scss';
+@import '../layouts/section/style.scss';
+@import '../layouts/template/style.scss';
 
 /* Components style sheets */
-@import "../components/typography/style.scss";
+@import '../components/typography/style.scss';

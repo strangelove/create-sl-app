@@ -1,10 +1,7 @@
-import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types'
-import {
-  documentToReactComponents,
-  Options,
-} from '@contentful/rich-text-react-renderer'
+import { BLOCKS, MARKS } from '@contentful/rich-text-types'
+import { Options } from '@contentful/rich-text-react-renderer'
 
-import { H1, H2, H3, H4, P1, Bold, Italic} from '@/components/typography'
+import { H1, H2, H3, H4, P1, Bold, Italic } from '@/components/typography'
 
 /* 
   Rich text options maps Contentful document content to

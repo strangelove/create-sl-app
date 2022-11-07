@@ -1,0 +1,27 @@
+.section {
+  width: 100%;
+}
+
+.wrapper {
+  height: 100%;
+  margin: 0 15px;
+  @include make-grid($space-20, 4);
+
+  @include screen-md {
+    max-width: $max-width-md;
+    margin: 0 auto;
+    @include make-grid($space-20, 8);
+  }
+
+  @include screen-xl {
+    max-width: $max-width-xl;
+    margin: 0 auto;
+    @include make-grid($space-20, 12);
+  }
+
+  @include screen-xxl {
+    max-width: $max-width-xxl;
+    margin: 0 auto;
+    @include make-grid($space-30, 12);
+  }
+}

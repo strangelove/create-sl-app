@@ -1,4 +1,3 @@
-
 /*
   TEXT MIXIN
   If the $size / $lineHeight / $weight arguments are not empty,
@@ -18,11 +17,11 @@
   @if $lineHeight != null {
     line-height: $lineHeight;
   }
-  
+
   @if $letter_spacing != null {
     letter-spacing: $letter_spacing;
   }
-  
+
   @if $weight != null {
     font-weight: $weight;
   }
@@ -42,49 +41,49 @@
 }
 
 // Very Small devices
-@mixin xxs($threshold: $screen-xxs-min) {
+@mixin screen-xxs($threshold: $screen-xxs-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // Small devices
-@mixin xs($threshold: $screen-xs-min) {
+@mixin screen-xs($threshold: $screen-xs-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // Small devices
-@mixin sm($threshold: $screen-sm-min) {
+@mixin screen-sm($threshold: $screen-sm-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // Medium devices
-@mixin md($threshold: $screen-md-min) {
+@mixin screen-md($threshold: $screen-md-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // Large devices
-@mixin lg($threshold: $screen-lg-min) {
+@mixin screen-lg($threshold: $screen-lg-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // Extra large devices
-@mixin xl($threshold: $screen-xl-min) {
+@mixin screen-xl($threshold: $screen-xl-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
 }
 
 // XX large devices
-@mixin xxl($threshold: $screen-xxl-min) {
+@mixin screen-xxl($threshold: $screen-xxl-min) {
   @media screen and (min-width: #{$threshold}) {
     @content;
   }
@@ -94,5 +93,22 @@
 @mixin customBreakPoint($min, $max) {
   @media screen and (min-width: $min) and (max-width: $max) {
     @content;
+  }
+}
+
+// Make grid
+@mixin make-grid($gap: null, $cols: null, $rows: null) {
+  display: grid;
+
+  @if $gap != null {
+    gap: $gap;
+  }
+
+  @if $cols != null {
+    grid-template-columns: repeat($cols, minmax(0, 1fr));
+  }
+
+  @if $rows != null {
+    grid-template-rows: repeat($rows, minmax(0, 1fr));
   }
 }
